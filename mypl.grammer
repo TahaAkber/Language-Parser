@@ -1,10 +1,18 @@
 program 
         -> var_assignment {% id %}
         | number {% id %}
-var_assignment -> identifier "=" number ";"
-        | number ";"
+var_assignment -> identifier ":=" number ";"
+        | number ";" {%
+                data => {
+                        return{
+                                type: "var_assignment",
+                                varname: data[0],
+                                value: data[2]
+                        }
+                }
+        %}
 
-identifier -> [a-z]:+ {% id %}
+identifier -> [a-zA-Z]:+ {% id %}
 
 number -> integer "." integer {%
     data => Number(data[0] + "." + data[2])

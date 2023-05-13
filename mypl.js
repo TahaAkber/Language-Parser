@@ -7,10 +7,19 @@ var grammar = {
     ParserRules: [
     {"name": "program", "symbols": ["var_assignment"], "postprocess": id},
     {"name": "program", "symbols": ["number"], "postprocess": id},
-    {"name": "var_assignment", "symbols": ["identifier", {"literal":"="}, "number", {"literal":";"}]},
-    {"name": "var_assignment", "symbols": ["number", {"literal":";"}]},
-    {"name": "identifier$ebnf$1", "symbols": [/[a-z]/]},
-    {"name": "identifier$ebnf$1", "symbols": ["identifier$ebnf$1", /[a-z]/], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
+    {"name": "var_assignment$string$1", "symbols": [{"literal":":"}, {"literal":"="}], "postprocess": function joiner(d) {return d.join('');}},
+    {"name": "var_assignment", "symbols": ["identifier", "var_assignment$string$1", "number", {"literal":";"}]},
+    {"name": "var_assignment", "symbols": ["number", {"literal":";"}], "postprocess": 
+        data => {
+                return{
+                        type: "var_assignment",
+                        varname: data[0],
+                        value: data[2]
+                }
+        }
+                },
+    {"name": "identifier$ebnf$1", "symbols": [/[a-zA-Z]/]},
+    {"name": "identifier$ebnf$1", "symbols": ["identifier$ebnf$1", /[a-zA-Z]/], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "identifier", "symbols": ["identifier$ebnf$1"], "postprocess": id},
     {"name": "number", "symbols": ["integer", {"literal":"."}, "integer"], "postprocess": 
         data => Number(data[0] + "." + data[2])
