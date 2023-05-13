@@ -1,0 +1,18 @@
+program 
+        -> var_assignment {% id %}
+        | number {% id %}
+var_assignment -> identifier "=" number ";"
+        | number ";"
+
+identifier -> [a-z]:+ {% id %}
+
+number -> integer "." integer {%
+    data => Number(data[0] + "." + data[2])
+    %}
+     | integer {% 
+        data => Number(data[0])
+     %}
+
+integer -> [0-9]:+ {%
+        data => data[0].join("")
+    %}
