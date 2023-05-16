@@ -1,13 +1,28 @@
 const nearley  = require("nearley");
 const grammer = require("./mypl.js");
 
-const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammer));
+let parser;
 
 try{
-    parser.feed("a:=126.2;");
+    parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammer));
+    parser.feed("excluded(a:=3;condition;++/--;){a:=10;}");
 console.log("parse succeeded",parser.results);
 }catch(e){
-    console.log('parse failed: because this is not defined')
+    console.log(e,'parse failed: because this is not defined')
+}
+// try{
+//     parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammer));
+//     parser.feed("Loop_Till(a:=2;){a:=5;}");
+// console.log("parse succeeded",parser.results);
+// }catch(e){
+//     console.log(e,'parse failed: because this is not defined')
+// }
+try{
+    parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammer));
+    parser.feed("a:=12;");
+console.log("parse succeeded",parser.results);
+}catch(e){
+    console.log(e,'parse failed: because this is not defined')
 }
 
 

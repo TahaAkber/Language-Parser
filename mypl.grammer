@@ -1,8 +1,23 @@
 program 
         -> var_assignment {% id %}
-        | number {% id %}
-var_assignment -> identifier ":=" number ";"
-        | number ";" {%
+        | number {% id %} 
+        | loop {% id %}
+
+loop -> loop_header "{" var_assignment:* "}"
+        | loop_header var_assignment:? 
+
+
+loop_header -> loop_header_for 
+        | loop_header_while
+
+loop_header_for -> "excluded" "(" var_assignment  condition  inc ")"
+
+loop_header_while -> "Loop_Till" "(" condition ")"
+
+condition -> "condition;"
+inc -> "++/--;"
+
+var_assignment -> identifier  ":="  number ";" {%
                 data => {
                         return{
                                 type: "var_assignment",
@@ -10,9 +25,10 @@ var_assignment -> identifier ":=" number ";"
                                 value: data[2]
                         }
                 }
-        %}
+        %} 
+        
 
-identifier -> [a-zA-Z]:+ {% id %}
+identifier -> [0-9a-zA-Z$_]:+ {% id %}
 
 number -> integer "." integer {%
     data => Number(data[0] + "." + data[2])
